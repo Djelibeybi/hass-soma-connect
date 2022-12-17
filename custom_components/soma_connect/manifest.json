@@ -1,0 +1,11 @@
+{
+  "domain": "soma_connect",
+  "name": "SOMA Connect (Custom)",
+  "version": "2022.12.0b1",
+  "config_flow": true,
+  "documentation": "https://github.com/Djelibeybi/hass-soma-connect",
+  "codeowners": ["@Djelibeybi"],
+  "requirements": ["aiosoma==0.2.2"],
+  "iot_class": "local_polling",
+  "loggers": ["aiosoma"]
+}

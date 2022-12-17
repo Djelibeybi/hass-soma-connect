@@ -1,0 +1,9 @@
+{
+    "name": "SOMA Connect",
+    "hacs": "1.6.0",
+    "domains": [
+        "cover",
+        "sensor"
+    ],
+    "homeassistant": "2022.12.0"
+}
