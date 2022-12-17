@@ -17,11 +17,15 @@ Platform | Description
 `sensor` | Two `sensor` entities are created for each device: one for the battery level and the other for the light level.
 .
 
+{% if not installed %}
+
 ## Installation
 
 1. Add <https://github.com/Djelibeybi/hass-soma-connect> to HACS as a [custom repository][hacs_custom].
 1. Click install.
 1. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "SOMA Connect (Custom)".
+
+{% endif %}
 
 ## Configuration
 
