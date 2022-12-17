@@ -1,7 +1,7 @@
 {
   "domain": "soma_connect",
   "name": "SOMA Connect (Custom)",
-  "version": "2022.12.0",
+  "version": "2022.12.1",
   "config_flow": true,
   "documentation": "https://github.com/Djelibeybi/hass-soma-connect",
   "codeowners": ["@Djelibeybi"],
