@@ -59,7 +59,7 @@ class SomaConnectTilt(SomaConnectEntity, CoverEntity):
     @property
     def current_cover_tilt_position(self) -> int:
         """Return the current cover tilt position."""
-        return self.current_position
+        return int(self.current_position)
 
     @property
     def is_closed(self) -> bool:
@@ -86,7 +86,7 @@ class SomaConnectTilt(SomaConnectEntity, CoverEntity):
         # 0 -> Closed down (api: 100)
         # 50 -> Fully open (api: 0)
         # 100 -> Closed up (api: -100)
-        target_position = 100 - ((kwargs.pop(ATTR_TILT_POSITION) / 50) * 100)
+        target_position = 100 - ((int(kwargs.pop(ATTR_TILT_POSITION)) / 50) * 100)
         if 50 <= target_position <= 100:
             kwargs["close_upwards"] = True
         await self.shade.set_position(target_position, **kwargs)
@@ -118,7 +118,7 @@ class SomaConnectShade(SomaConnectEntity, CoverEntity):
     @property
     def current_cover_position(self) -> int:
         """Return the current cover position."""
-        return self.current_position
+        return int(self.current_position)
 
     @property
     def is_closed(self) -> bool:
@@ -145,7 +145,7 @@ class SomaConnectShade(SomaConnectEntity, CoverEntity):
 
     async def async_set_cover_position(self, **kwargs: Any) -> None:
         """Move the cover shutter to a specific position."""
-        self.current_position = kwargs.pop(ATTR_POSITION)
+        self.current_position = int(kwargs.pop(ATTR_POSITION))
         _LOGGER.debug(
             "Soft positioning %s (%s) to position %i",
             self.shade.name,
@@ -158,7 +158,7 @@ class SomaConnectShade(SomaConnectEntity, CoverEntity):
         """Update the cover with the latest data."""
 
         response = await self.shade.get_state()
-        position = response.get("position", None)
+        position = int(response.get("position", None))
 
         _LOGGER.debug(
             "Actual shade position: %i for %s (%s)",

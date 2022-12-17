@@ -115,7 +115,7 @@ class SomaConnectEntity(Entity):
 
     def set_position(self, position: int) -> None:
         """Set the current device position."""
-        self.current_position = position
+        self.current_position = int(position)
         self.schedule_update_ha_state()
 
     async def async_get_position(self) -> int | None:
@@ -127,35 +127,37 @@ class SomaConnectEntity(Entity):
             self.shade.name,
             self.shade.mac,
         )
-        return result.get("position", None)
+        return int(result.get("position", None)) or None
 
     async def async_get_battery_level(self) -> int | None:
         """Return the battery level."""
         response = await self.shade.get_battery_level()
-        battery_level: int | None = None
+        battery_state: int | None = None
 
-        if (battery_percentage := response.get("battery_percentage", None)) is not None:
-            battery_level = battery_percentage
 
         # https://support.somasmarthome.com/hc/en-us/articles/360026064234-HTTP-API
+        # The battery_level endpoint also returns battery_percentage with values
+        # in the range 0..100 that should match what the SOMA app shows
+        if (battery_percentage := response.get("battery_percentage", None)) is not None:
+            battery_state = battery_percentage
+
         # battery_level response is expected to be min = 360, max 410 for
         # 0-100% levels above 410 are consider 100% and below 360, 0% as the
         # device considers 360 the minimum to move the motor.
-        else:
-            battery_level = max(
-                min(100, round(2 * (response.get("battery_level") - 360))), 0
-            )
+        elif (battery_level := response.get("battery_level", None)) is not None:
+            battery_state = max(min(100, round(2 * (int(battery_level) - 360))), 0)
 
         _LOGGER.debug(
             "Updating battery_level to %i for %s (%s)",
-            battery_level,
+            battery_state,
             self.shade.name,
             self.shade.mac,
         )
-        return battery_level
+        return int(battery_state) or None
 
     async def async_get_light_level(self) -> int | None:
         """Return the light level."""
+        light_level: int | None = None
 
         result = await self.shade.get_light_level()
         light_level = result.get("light_level", None)
@@ -167,4 +169,4 @@ class SomaConnectEntity(Entity):
             self.shade.mac,
         )
 
-        return light_level
+        return int(light_level) or None
