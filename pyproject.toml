@@ -11,7 +11,7 @@ packages = [{include = "hass_soma_connect"}]
 python = "^3.10"
 homeassistant = "^2022.12.6"
 colorlog = "^6.7.0"
-aiosoma = "^0.2.2"
+aiosoma = "^1.0.0"
 
 
 
