@@ -1,4 +1,4 @@
-# SOMA Connect (Custom) for Home Assistant
+# SOMA Connect for Home Assistant
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
@@ -9,13 +9,21 @@ This custom component is intended to be used instead of the core `soma` integrat
 It uses more resilient methods of communicating with the SOMA Connect device and
 provides additional entities including battery and light levels.
 
-**This component will set up the following platforms.**
+## Platforms
+
+This integration creates entities in the following platforms:
 
 Platform | Description
 -- | --
-`cover` | A `cover` entity is created for each Shade or Tilt device discovered.
+`cover` | A `cover` entity is created for each Shade device discovered.
 `sensor` | Two `sensor` entities are created for each device: one for the battery level and the other for the light level.
-.
+
+The cover entity supports Open, Close, Stop and Set Position.
+
+### Limitations
+
+This integration does not (yet) support Tilt devices as I don't have one to test
+with. If I get one, I'll add support for it.
 
 ## Installation
 
