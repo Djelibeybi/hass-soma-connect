@@ -12,7 +12,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from . import DOMAIN
+from .const import DOMAIN
 
 SCAN_INTERVAL = timedelta(seconds=30)
 DELAY_BEFORE_UPDATE = 1.0
