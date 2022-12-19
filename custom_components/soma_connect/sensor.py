@@ -1,101 +1,117 @@
-"""Support for Soma sensors."""
-from datetime import timedelta
-import logging
+"""Sensor entities for SOMA Connect."""
+from __future__ import annotations
 
-from aiosoma import Shade
+from aiosoma import SomaShade
 
-from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorEntityDescription,
+)
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import PERCENTAGE, LIGHT_LUX
-from homeassistant.core import HomeAssistant
+from homeassistant.const import LIGHT_LUX, PERCENTAGE
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from . import DOMAIN
+from .coordinator import SomaConnectUpdateCoordinator
+from .entity import SomaConnectEntity
 
-from . import DEVICES, SomaConnectEntity
-from .const import SOMA, DOMAIN
+BATTERY_LEVEL_SENSOR = "battery_level"
+LIGHT_LEVEL_SENSOR = "light_level"
 
-SCAN_INTERVAL = timedelta(minutes=5)
-_LOGGER = logging.getLogger(__name__)
+BATTERY_SENSOR_DESCRIPTION = SensorEntityDescription(
+    key=BATTERY_LEVEL_SENSOR,
+    name="Battery",
+    device_class=SensorDeviceClass.BATTERY,
+    has_entity_name=True,
+    native_unit_of_measurement=PERCENTAGE,
+    entity_category=EntityCategory.DIAGNOSTIC,
+)
+
+LIGHT_SENSOR_DESCRIPTION = SensorEntityDescription(
+    key=LIGHT_LEVEL_SENSOR,
+    name="Light level",
+    entity_registry_enabled_default=False,
+    device_class=SensorDeviceClass.ILLUMINANCE,
+    has_entity_name=True,
+    native_unit_of_measurement=LIGHT_LUX,
+    entity_category=EntityCategory.DIAGNOSTIC,
+)
 
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Soma sensor platform."""
 
-    soma = hass.data[DOMAIN][SOMA]
-    devices = hass.data[DOMAIN][DEVICES]
+    coordinator: SomaConnectUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
+    entities: list[SomaConnectBatterySensor | SomaConnectLightSensor] = []
 
-    async_add_entities(
-        [
-            SomaConnectBatterySensor(
-                shade=Shade(soma, **shade), soma=hass.data[DOMAIN][SOMA]
-            )
-            for shade in devices
-        ],
-        True,
-    )
-    async_add_entities(
-        [
-            SomaConnectLightSensor(
-                shade=Shade(soma, **shade), soma=hass.data[DOMAIN][SOMA]
-            )
-            for shade in devices
-        ],
-        True,
-    )
+    for shade in coordinator.shades:
+        entities.append(
+            SomaConnectBatterySensor(coordinator, shade, BATTERY_SENSOR_DESCRIPTION)
+        )
+        entities.append(
+            SomaConnectLightSensor(coordinator, shade, LIGHT_SENSOR_DESCRIPTION)
+        )
+
+    async_add_entities(entities, True)
 
 
 class SomaConnectBatterySensor(SomaConnectEntity, SensorEntity):
     """Representation of a Soma cover device."""
 
-    _attr_device_class = SensorDeviceClass.BATTERY
-    _attr_native_unit_of_measurement = PERCENTAGE
-    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    def __init__(
+        self,
+        coordinator: SomaConnectUpdateCoordinator,
+        shade: SomaShade,
+        description: SensorEntityDescription,
+    ) -> None:
+        """Initialise the battery sensor."""
+        super().__init__(coordinator, shade)
+        self.entity_description = description
+        self._attr_name = description.name
+        self._attr_unique_id = f"{shade.mac}_{description.key}"
+        self._attr_native_unit_of_measurement = description.native_unit_of_measurement
+        self._attr_native_value = shade.battery_percentage
 
     @property
-    def name(self):
-        """Return the name of the device."""
-        return f"{self.shade.name} battery level"
-
-    @property
-    def unique_id(self):
-        return f"{self.shade.mac}_battery_level"
-
-    @property
-    def native_value(self):
-        """Return the state of the entity."""
-        return self.battery_state
-
-    async def async_update(self) -> None:
-        """Update the sensor with the latest data."""
-        self.battery_state = await self.async_get_battery_level()
+    def native_value(self) -> int:
+        """Return the current battery level of the shade motor."""
+        return self.coordinator.get_battery_level(self._shade.mac)
 
 
 class SomaConnectLightSensor(SomaConnectEntity, SensorEntity):
     """Representation of a Soma cover device."""
 
-    _attr_device_class = SensorDeviceClass.ILLUMINANCE
-    _attr_native_unit_of_measurement = LIGHT_LUX
-    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    def __init__(
+        self,
+        coordinator: SomaConnectUpdateCoordinator,
+        shade: SomaShade,
+        description: SensorEntityDescription,
+    ) -> None:
+        """Initialise the light sensor."""
+        super().__init__(coordinator, shade)
+        self.entity_description = description
+        self._attr_name = description.name
+        self._attr_unique_id = f"{shade.mac}_{description.key}"
+        self._attr_native_unit_of_measurement = description.native_unit_of_measurement
+        self._attr_native_value = shade.light_level
 
     @property
-    def name(self):
-        """Return the name of the device."""
-        return f"{self.shade.name} light level"
+    def native_value(self) -> int:
+        return self.coordinator.get_light_level(self._shade.mac)
 
-    @property
-    def unique_id(self):
-        return f"{self.shade.mac}_light_level"
+    @callback
+    async def async_added_to_hass(self) -> None:
+        """Enable sensor updates."""
 
-    @property
-    def native_value(self):
-        """Return the state of the entity."""
-        return self.light_level
+        self.async_on_remove(
+            await self.coordinator.async_enable_light_level_updates(self._shade.mac)
+        )
 
-    async def async_update(self) -> None:
-        """Update the sensor with the latest data."""
-        self.light_level = await self.async_get_light_level()
+        return await super().async_added_to_hass()
