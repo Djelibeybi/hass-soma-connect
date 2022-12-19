@@ -5,9 +5,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
 from homeassistant.core import HomeAssistant
 
+from .const import DOMAIN
 from .coordinator import SomaConnectUpdateCoordinator
-
-DOMAIN = "soma_connect"
 
 PLATFORMS = [Platform.COVER, Platform.SENSOR]
 
