@@ -1,24 +1,22 @@
 {
-    "config": {
-        "abort": {
-            "already_setup": "Already configured. Only a single configuration possible.",
-            "authorize_url_timeout": "Timeout generating authorize URL.",
-            "connection_error": "Failed to connect",
-            "missing_configuration": "The Soma component is not configured. Please follow the documentation.",
-            "result_error": "SOMA Connect responded with error status."
+  "config": {
+    "abort": {
+      "already_setup": "This SOMA Connect appliance has already been configured.",
+      "connection_error": "Failed to connect",
+      "result_error": "Your SOMA Connect responded with an error status."
+    },
+    "create_entry": {
+      "default": "Successfully connected"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "host": "Host",
+          "port": "Port"
         },
-        "create_entry": {
-            "default": "Successfully authenticated"
-        },
-        "step": {
-            "user": {
-                "data": {
-                    "host": "Host",
-                    "port": "Port"
-                },
-                "description": "Please enter connection settings of your SOMA Connect.",
-                "title": "SOMA Connect"
-            }
-        }
+        "description": "Please enter the the host name (or IP address) and port for your SOMA Connect appliance.",
+        "title": "SOMA Connect"
+      }
     }
+  }
 }
