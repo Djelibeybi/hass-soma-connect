@@ -9,7 +9,7 @@ packages = [{include = "hass_soma_connect"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-homeassistant = "^2022.12.6"
+homeassistant = ">=2022.12.0"
 colorlog = "^6.7.0"
 aiosoma = "^1.1.3"
 
