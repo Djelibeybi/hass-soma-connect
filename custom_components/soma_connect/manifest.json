@@ -1,12 +1,12 @@
 {
   "domain": "soma_connect",
   "name": "SOMA Connect",
-  "version": "2022.12.3",
+  "codeowners": ["@Djelibeybi"],
   "config_flow": true,
   "documentation": "https://github.com/Djelibeybi/hass-soma-connect",
-  "issue_tracker": "https://github.com/Djelibeybi/hass-soma-connect/issues",
-  "codeowners": ["@Djelibeybi"],
-  "requirements": ["aiosoma==1.1.3"],
   "iot_class": "local_polling",
-  "loggers": ["aiosoma"]
+  "issue_tracker": "https://github.com/Djelibeybi/hass-soma-connect/issues",
+  "loggers": ["aiosoma"],
+  "requirements": ["aiosoma==1.1.3"],
+  "version": "2022.12.3"
 }
