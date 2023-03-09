@@ -79,10 +79,16 @@ class SomaConnectBatterySensor(SomaConnectEntity, SensorEntity):
         self._attr_native_unit_of_measurement = description.native_unit_of_measurement
         self._attr_native_value = shade.battery_percentage
 
-    @property
-    def native_value(self) -> int:
-        """Return the current battery level of the shade motor."""
-        return self.coordinator.get_battery_level(self._shade.mac)
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle coordinator updates."""
+        self._async_update_attrs()
+        super()._handle_coordinator_update()
+
+    @callback
+    def _async_update_attrs(self) -> None:
+        """Update position attribute."""
+        self._attr_native_value = self.coordinator.get_battery_level(self._shade.mac)
 
 
 class SomaConnectLightSensor(SomaConnectEntity, SensorEntity):
@@ -102,9 +108,16 @@ class SomaConnectLightSensor(SomaConnectEntity, SensorEntity):
         self._attr_native_unit_of_measurement = description.native_unit_of_measurement
         self._attr_native_value = shade.light_level
 
-    @property
-    def native_value(self) -> int:
-        return self.coordinator.get_light_level(self._shade.mac)
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle coordinator updates."""
+        self._async_update_attrs()
+        super()._handle_coordinator_update()
+
+    @callback
+    def _async_update_attrs(self) -> None:
+        """Update position attribute."""
+        self._attr_native_value = self.coordinator.get_light_level(self._shade.mac)
 
     @callback
     async def async_added_to_hass(self) -> None:

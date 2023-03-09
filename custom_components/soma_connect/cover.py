@@ -14,7 +14,7 @@ from homeassistant.components.cover import (
     CoverEntityFeature,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
@@ -58,11 +58,6 @@ class SomaConnectShade(SomaConnectEntity, CoverEntity):
         )
 
     @property
-    def current_cover_position(self) -> int | None:
-        """Return the current cover position."""
-        return self.coordinator.get_position(self._shade.mac)
-
-    @property
     def is_closed(self) -> bool:
         """Return if the cover is closed."""
         return bool(self.current_cover_position == 0)
@@ -71,19 +66,36 @@ class SomaConnectShade(SomaConnectEntity, CoverEntity):
         """Close the cover."""
         _LOGGER.debug("Closing %s", self.name)
         await self.coordinator.close_shade(self._shade.mac)
+        self.async_schedule_update_ha_state(True)
 
     async def async_open_cover(self, **kwargs: Any) -> None:
         """Open the cover."""
         _LOGGER.debug("Opening %s", self.name)
         await self.coordinator.open_shade(self._shade.mac)
+        self.async_schedule_update_ha_state(True)
 
     async def async_stop_cover(self, **kwargs: Any) -> None:
         """Stop the cover."""
         _LOGGER.debug("Stopping %s", self.name)
         await self.coordinator.stop_shade(self._shade.mac)
+        self.async_schedule_update_ha_state(True)
 
     async def async_set_cover_position(self, **kwargs: Any) -> None:
         """Move the cover shutter to a specific position."""
         set_position = int(100 - kwargs.pop(ATTR_POSITION))
         _LOGGER.debug("Setting %s to %s", self.name, set_position)
         await self.coordinator.set_shade_position(self._shade.mac, set_position)
+        self.async_schedule_update_ha_state(True)
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle coordinator updates."""
+        self._async_update_attrs()
+        super()._handle_coordinator_update()
+
+    @callback
+    def _async_update_attrs(self) -> None:
+        """Update position attribute."""
+        self._attr_current_cover_position = self.coordinator.get_position(
+            self._shade.mac
+        )
