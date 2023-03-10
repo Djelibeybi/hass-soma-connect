@@ -93,28 +93,62 @@ class SomaConnectUpdateCoordinator(DataUpdateCoordinator):
             self._shades[shade.mac] = shade
             self._availability[shade.mac] = True
 
+            _LOGGER.debug(
+                "Will update position and battery level for shade: %s (%s)",
+                shade.name,
+                shade.mac,
+            )
+
             # Update position and battery level every cycle
             tasks = [shade.get_current_position(), shade.get_current_battery_level()]
 
             # Update light level if sensor is enabled.
             if self._get_light_levels.get(shade.mac, False) is True:
+                _LOGGER.debug(
+                    "Adding light level to request for shade: %s (%s)",
+                    shade.name,
+                    shade.mac,
+                )
                 tasks.append(shade.get_current_light_level())
 
             responses = await asyncio.gather(*tasks)
 
             # Set shade unavailable if no value for position or battery level
             if responses[0] is None or responses[1] is None:
+                _LOGGER.debug(
+                    "No data returned from SOMA Connect for shade: %s (%s)",
+                    shade.name,
+                    shade.mac,
+                )
                 self._availability[shade.mac] = False
 
             # Save the position and battery level values
             if len(responses) >= 2:
                 self._positions[shade.mac] = int(100 - shade.position)
                 self._battery_levels[shade.mac] = int(shade.battery_percentage)
+                _LOGGER.debug(
+                    "SOMA Connect reported shade %s (%s) position: %s",
+                    shade.name,
+                    shade.mac,
+                    self._positions[shade.mac],
+                )
+                _LOGGER.debug(
+                    "SOMA Connect reported shade %s (%s) battery level: %s",
+                    shade.name,
+                    shade.mac,
+                    self._battery_levels[shade.mac],
+                )
 
             # Save light level if it was retrieved
             if len(responses) == 3:
                 light_level = int(shade.light_level)
                 self._light_levels[shade.mac] = light_level
+                _LOGGER.debug(
+                    "SOMA Connect reported shade %s (%s) light level: %s",
+                    shade.name,
+                    shade.mac,
+                    self._light_levels[shade.mac],
+                )
 
         # If any device failed to return a position or battery level value
         # set the update as failed

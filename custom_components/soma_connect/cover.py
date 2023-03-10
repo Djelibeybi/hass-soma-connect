@@ -64,26 +64,31 @@ class SomaConnectShade(SomaConnectEntity, CoverEntity):
 
     async def async_close_cover(self, **kwargs: Any) -> None:
         """Close the cover."""
-        _LOGGER.debug("Closing %s", self.name)
+        _LOGGER.debug("Sending request to close %s (%s)", self.name, self._shade.mac)
         await self.coordinator.close_shade(self._shade.mac)
         self.async_schedule_update_ha_state(True)
 
     async def async_open_cover(self, **kwargs: Any) -> None:
         """Open the cover."""
-        _LOGGER.debug("Opening %s", self.name)
+        _LOGGER.debug("Sending request to open %s (%s)", self.name, self._shade.mac)
         await self.coordinator.open_shade(self._shade.mac)
         self.async_schedule_update_ha_state(True)
 
     async def async_stop_cover(self, **kwargs: Any) -> None:
         """Stop the cover."""
-        _LOGGER.debug("Stopping %s", self.name)
+        _LOGGER.debug("Sending request to stop %s (%s)", self.name, self._shade.mac)
         await self.coordinator.stop_shade(self._shade.mac)
         self.async_schedule_update_ha_state(True)
 
     async def async_set_cover_position(self, **kwargs: Any) -> None:
         """Move the cover shutter to a specific position."""
         set_position = int(100 - kwargs.pop(ATTR_POSITION))
-        _LOGGER.debug("Setting %s to %s", self.name, set_position)
+        _LOGGER.debug(
+            "Sending request to set %s (%s) to position %s",
+            self.name,
+            self._shade.mac,
+            set_position,
+        )
         await self.coordinator.set_shade_position(self._shade.mac, set_position)
         self.async_schedule_update_ha_state(True)
 
@@ -98,4 +103,10 @@ class SomaConnectShade(SomaConnectEntity, CoverEntity):
         """Update position attribute."""
         self._attr_current_cover_position = self.coordinator.get_position(
             self._shade.mac
+        )
+        _LOGGER.debug(
+            "Coordinator set position for shade %s (%s) to: %s",
+            self.name,
+            self._shade.mac,
+            self.current_cover_position,
         )
