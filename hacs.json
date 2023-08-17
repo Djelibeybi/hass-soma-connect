@@ -1,5 +1,5 @@
 {
   "name": "SOMA Connect",
   "hacs": "1.29.0",
-  "homeassistant": "2022.12.0"
+  "homeassistant": "2023.8.2"
 }
