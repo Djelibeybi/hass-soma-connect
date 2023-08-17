@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hass-soma-connect"
-version = "0.1.0"
+version = "2023.8.1"
 description = "SOMA Connect integration for Home Assistant"
 authors = ["Avi Miller <me@dje.li>"]
 license = "MIT"
