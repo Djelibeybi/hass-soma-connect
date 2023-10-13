@@ -124,20 +124,18 @@ frozenlist = ">=1.1.0"
 
 [[package]]
 name = "aiosoma"
-version = "1.1.10"
+version = "1.1.6"
 description = "Asyncio SOMA Connect"
 optional = false
-python-versions = ">=3.11,<4.0"
+python-versions = ">=3.9,<4.0"
 files = [
-    {file = "aiosoma-1.1.10-py3-none-any.whl", hash = "sha256:87b9494f5a1f705e0d0d918d530374e76b2c9897ccdf054ca749476dfa329283"},
-    {file = "aiosoma-1.1.10.tar.gz", hash = "sha256:9f3d3f32473b8b90730a25cf658aa3310206cfda7de239bef0f7605e28fe7f52"},
+    {file = "aiosoma-1.1.6-py3-none-any.whl", hash = "sha256:a1f21e62c3fbacac950c5b33dd39a9ad883d3ab081f1e33524f73246ef2bf980"},
+    {file = "aiosoma-1.1.6.tar.gz", hash = "sha256:4d6c86c20bb37002f5e48edf655a650299d59776552ee962e0205538184921b8"},
 ]
 
 [package.dependencies]
-aiohttp = "3.8.5"
+aiohttp = ">=3.8.1,<4.0.0"
 backoff = ">=2.2.1,<3.0.0"
-black = "23.9.1"
-pre-commit = "3.4.0"
 rich = ">=13.0.0,<14.0.0"
 
 [[package]]
@@ -1424,13 +1422,13 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "pre-commit"
-version = "3.4.0"
+version = "3.5.0"
 description = "A framework for managing and maintaining multi-language pre-commit hooks."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "pre_commit-3.4.0-py2.py3-none-any.whl", hash = "sha256:96d529a951f8b677f730a7212442027e8ba53f9b04d217c4c67dc56c393ad945"},
-    {file = "pre_commit-3.4.0.tar.gz", hash = "sha256:6bbd5129a64cad4c0dfaeeb12cd8f7ea7e15b77028d985341478c8af3c759522"},
+    {file = "pre_commit-3.5.0-py2.py3-none-any.whl", hash = "sha256:841dc9aef25daba9a0238cd27984041fa0467b4199fc4852e27950664919f660"},
+    {file = "pre_commit-3.5.0.tar.gz", hash = "sha256:5804465c675b659b0862f07907f96295d490822a450c4c40e747d0b1c6ebcb32"},
 ]
 
 [package.dependencies]
