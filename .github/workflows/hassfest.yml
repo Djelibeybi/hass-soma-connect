@@ -4,6 +4,10 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - "custom_components/soma_connect/**"
+      - "pyproject.toml"
+      - "poetry.lock"
   schedule:
     - cron:  '0 0 * * *'
 
