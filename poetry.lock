@@ -154,13 +154,13 @@ frozenlist = ">=1.1.0"
 
 [[package]]
 name = "aiosoma"
-version = "1.1.20"
+version = "1.1.21"
 description = "Asyncio SOMA Connect"
 optional = false
 python-versions = ">=3.11,<4.0"
 files = [
-    {file = "aiosoma-1.1.20-py3-none-any.whl", hash = "sha256:452aa5906d725cc4948865a9b0569b50fbf778f62cffd85ca8562fee40b0f984"},
-    {file = "aiosoma-1.1.20.tar.gz", hash = "sha256:757f4f3aa2d696c29d597ed79e03cdf11699389ff5b98fb2e5aaf70d21c436ea"},
+    {file = "aiosoma-1.1.21-py3-none-any.whl", hash = "sha256:4a7b063807b411b9e80458d8ef23c7c9c03f1f0808c2fd0b0cdebc1f18cff9ab"},
+    {file = "aiosoma-1.1.21.tar.gz", hash = "sha256:2577bd41afbf40e4b902c9c10880aecbf5c7b9313fa449ea7455cfacee76c49e"},
 ]
 
 [package.dependencies]
