@@ -1,4 +1,5 @@
 """Data update coordinator for SOMA Connect."""
+
 from __future__ import annotations
 
 import asyncio

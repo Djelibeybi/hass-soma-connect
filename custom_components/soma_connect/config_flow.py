@@ -1,4 +1,5 @@
 """Config flow for SOMA Connect."""
+
 import logging
 
 from aiohttp import ClientError

@@ -1,4 +1,5 @@
 """Sensor entities for SOMA Connect."""
+
 from __future__ import annotations
 
 from aiosoma import SomaShade
